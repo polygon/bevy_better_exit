@@ -5,8 +5,11 @@ use std::time::Duration;
 
 #[derive(Component)]
 struct ExitProcess {
-    timer: Option<Timer>,
+    timer: Timer,
 }
+
+#[derive(Component)]
+struct ExitProcessMarker;
 
 fn main() {
     App::new()
@@ -27,28 +30,34 @@ fn setup(mut commands: Commands, mut exit: EventWriter<ExitEvent>) {
     commands
         .spawn()
         .insert(ExitListener::new(Some("Process")))
-        .insert(ExitProcess { timer: None });
+        .insert(ExitProcessMarker);
     info!("Sending ExitEvent");
     exit.send(ExitEvent);
 }
 
-fn exit_listener(mut exit_events: EventReader<ExitEvent>, mut process: Query<&mut ExitProcess>) {
+fn exit_listener(
+    mut commands: Commands,
+    mut exit_events: EventReader<ExitEvent>,
+    process: Query<Entity, With<ExitProcessMarker>>,
+) {
     if let Some(ExitEvent) = exit_events.iter().last() {
-        info!("ExitEvent received, Enabling exit process timer");
-        process.single_mut().timer = Some(Timer::from_seconds(1.0, false));
+        info!("ExitEvent received, spawning exit process");
+        let process_entity = process.single();
+        commands.entity(process_entity).insert(ExitProcess {
+            timer: Timer::from_seconds(1.0, false),
+        });
     }
 }
 
 fn exit_process(mut process: Query<(&mut ExitProcess, &mut ExitListener)>, time: Res<Time>) {
-    let (mut process, mut listener) = process.single_mut();
-    if let Some(ref mut timer) = &mut process.timer {
-        timer.tick(time.delta());
+    if let Ok((mut process, mut listener)) = process.get_single_mut() {
+        process.timer.tick(time.delta());
 
-        if timer.just_finished() {
+        if process.timer.just_finished() {
             info!("Fade out done, acknowledging exit");
             listener.acknowledge();
         }
 
-        info!("Fading out: {:.2}%", 100. * timer.percent());
+        info!("Fading out: {:.2}%", 100. * process.timer.percent());
     }
 }
