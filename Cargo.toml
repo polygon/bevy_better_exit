@@ -1,0 +1,14 @@
+[package]
+name = "bevy_better_exit"
+version = "0.9.0"
+description = "Bevy plugin for improved shutdown semantics"
+authors = ["polygon <polygon@wh2.tu-dresden.de>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/polygon/bevy_better_exit"
+keywords = ["bevy", "exit"]
+categories = ["game-engines"]
+edition = "2021"
+
+[dependencies]
+bevy = { version = "0.6.1", default_features = false }
