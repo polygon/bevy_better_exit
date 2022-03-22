@@ -12,3 +12,6 @@ edition = "2021"
 
 [dependencies]
 bevy = { version = "0.6.1", default_features = false }
+
+[dev-dependencies]
+bevy = "0.6.1"
