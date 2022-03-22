@@ -26,7 +26,7 @@ fn main() {
 }
 
 fn setup(mut commands: Commands, mut exit: EventWriter<ExitEvent>) {
-    info!("Spawning ExitProcess");
+    info!("Creating ExitListener");
     commands
         .spawn()
         .insert(ExitListener::new(Some("Process")))
