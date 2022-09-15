@@ -11,7 +11,7 @@ categories = ["game-engines"]
 edition = "2021"
 
 [dependencies]
-bevy = { version = "0.6.1", default_features = false }
+bevy = { version = "0.8.0", default_features = false }
 
 [dev-dependencies]
-bevy = "0.6.1"
+bevy = "0.8.0"

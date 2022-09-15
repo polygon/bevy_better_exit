@@ -1,6 +1,6 @@
 use bevy::app::AppExit;
 use bevy::input::keyboard::KeyboardInput;
-use bevy::input::ElementState;
+use bevy::input::ButtonState;
 use bevy::prelude::*;
 
 use bevy::log::{debug, error};
@@ -11,6 +11,8 @@ pub struct ExitListener {
     ack: bool,
 }
 
+pub struct ExitEvent;
+
 pub struct BetterExitPlugin(BetterExitData);
 
 #[derive(Clone)]
@@ -18,8 +20,6 @@ struct BetterExitData {
     timeout: Option<f32>,
     exit_time: Option<f32>,
 }
-
-pub struct ExitEvent;
 
 impl ExitListener {
     pub fn new(label: Option<&'static str>) -> Self {
@@ -108,7 +108,7 @@ pub fn exit_on_esc_system(
 ) {
     for event in keyboard_input_events.iter() {
         if let Some(key_code) = event.key_code {
-            if event.state == ElementState::Pressed && key_code == KeyCode::Escape {
+            if event.state == ButtonState::Pressed && key_code == KeyCode::Escape {
                 exit_events.send(ExitEvent);
             }
         }
